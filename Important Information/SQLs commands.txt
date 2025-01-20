@@ -1,0 +1,20 @@
+-- SELECT * from products WHERE price > 20 OR name = null;
+-- SELECT * from products WHERE id IN (1,2,3);
+-- SELECT * from products;
+-- SELECT * from products WHERE name LIKE 'TV%';
+-- SELECT * from products ORDER BY price;
+-- SELECT * from products ORDER BY inventry DESC, price , id;
+-- SELECT * from products ORDER BY Created_at
+-- SELECT * from products LIMIT 10;
+-- SELECT * from products WHERE price > 10 LIMIT 10;
+-- SELECT * from products ORDER BY id LIMIT 5;
+-- SELECT * from products ORDER BY id LIMIT 10 OFFSET 5;
+
+
+INSERT Multiple or single rows in db
+
+-- INSERT INTO products (name, price, inventry) VALUES ('Toyota', 250000, 10), ('Porsche', 1000000, 1)RETURNING *;
+-- INSERT INTO products (name, price, inventry) VALUES ('Toyota', 250000, 10), ('Porsche', 1000000, 1)RETURNING *;
+-- DELETE FROM products WHERE id = 11;
+SELECT * from products;
+-- UPDATE products SET price = 200 , name = 'Full keyboard' WHERE id = 5

@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "fastapi-postgresql"
+version = "0.1.0"
+description = ""
+authors = ["Hassan Mehmood <ihassan463m@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = {extras = ["standard"], version = "^0.115.6"}
+uvicorn = "^0.34.0"
+psycopg2-binary = "^2.9.10"
+sqlalchemy = "^2.0.37"
+pyjwt = "^2.10.1"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-jose = "^3.3.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
