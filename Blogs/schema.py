@@ -1,7 +1,8 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 from typing import Optional
 
+from pydantic.types import conint
 
 # User schema to show user details (used in Post)
 class ShowUser(BaseModel):
@@ -61,3 +62,8 @@ class Token(BaseModel):
 # TokenData schema to hold data related to the user (usually after token verification)
 class TokenData(BaseModel):
     id: Optional[int] = None
+
+class Vote(BaseModel):
+    # direction either one or zero 
+    post_id: int
+    direction: int = Field(..., le=1, ge=0)

@@ -1,5 +1,6 @@
 from fastapi import APIRouter , HTTPException , status , Depends
 from sqlalchemy.orm import Session
+from typing import Optional
 from .. import models,schema,database , oauth2
 
 
@@ -8,13 +9,13 @@ get_db = database.get_db
 
 get_current_user = oauth2.get_current_user
 
-def get_all_posts(db: Session = Depends(get_db)):
-    posts = db.query(models.Post).all()
+def get_all_posts(db: Session = Depends(get_db),limit:int = 10,skip:int = 0,search: Optional[str] = ""):
+    posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
     return posts
 
 def create_new_post(post: schema.PostCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     print("Current User:", current_user)  # This will print the user object if the token is valid
-    new_post = models.Post( owner_id=current_user.id , **post.dict())
+    new_post = models.Post(owner_id=current_user.id , **post.dict())
     
     db.add(new_post)
     db.commit()
@@ -51,12 +52,17 @@ def delete_any_post(id: int, db: Session = Depends(get_db), current_user :int = 
     return {"message": "Post deleted successfully"}
 
 
-def update_any_post(id: int, post: schema.PostCreate, db: Session = Depends(get_db)):
+def update_any_post(id: int, post: schema.PostCreate, db: Session = Depends(get_db),current_user : int = Depends(oauth2.get_current_user)):
     post_to_update = db.query(models.Post).filter(models.Post.id == id).first()
     
     if not post_to_update:
         raise HTTPException(status_code=404, detail="Post not found")
     
+    
+    if post_to_update.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="You are not allowed to Update this post")
+
+
     for key, value in post.dict().items():
         print(key,value)
         setattr(post_to_update, key, value)

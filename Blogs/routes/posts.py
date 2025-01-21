@@ -1,4 +1,4 @@
-from typing import List
+from typing import List , Optional
 from fastapi import APIRouter , HTTPException , status , Depends
 from sqlalchemy.orm import Session
 from .. import models,schema,database , oauth2
@@ -16,8 +16,8 @@ router = APIRouter(
 get_db = database.get_db
 
 @router.get("/",status_code=status.HTTP_200_OK,response_model=List[schema.Post])
-def get_posts(db: Session = Depends(get_db), current_user :int = Depends(oauth2.get_current_user)):
-    return posts.get_all_posts(db)
+def get_posts(db: Session = Depends(get_db), current_user :int = Depends(oauth2.get_current_user),limit:int =10 ,skip:int = 0,search: Optional[str] = ""):
+    return posts.get_all_posts(db,limit,skip,search)
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=schema.Post)
@@ -40,5 +40,5 @@ def delete_post(id: int, db: Session = Depends(get_db), current_user :int = Depe
 
 @router.put('/{id}', status_code=status.HTTP_200_OK)
 def update_post(id: int, post: schema.PostCreate, db: Session = Depends(get_db), current_user :int = Depends(oauth2.get_current_user)):
-    return posts.update_any_post(id,post,db)
+    return posts.update_any_post(id,post,db,current_user)
 
