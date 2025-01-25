@@ -2,7 +2,7 @@ from fastapi import APIRouter , HTTPException , status , Depends
 from sqlalchemy.orm import Session
 from typing import Optional
 from .. import models,schema,database , oauth2
-
+from sqlalchemy import func
 
 get_db = database.get_db
 
@@ -10,8 +10,13 @@ get_db = database.get_db
 get_current_user = oauth2.get_current_user
 
 def get_all_posts(db: Session = Depends(get_db),limit:int = 10,skip:int = 0,search: Optional[str] = ""):
-    posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
-    return posts
+    # posts = db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
+
+    results = db.query(models.Post,func.count(models.Votes.post_id).label('votes')).join(models.Votes,models.Votes.post_id
+                == models.Post.id,isouter=True).group_by(models.Post.id).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
+    return results
+
+
 
 def create_new_post(post: schema.PostCreate, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     print("Current User:", current_user)  # This will print the user object if the token is valid
@@ -27,7 +32,8 @@ def create_new_post(post: schema.PostCreate, db: Session = Depends(get_db), curr
 
 def get_spec_post(id: int , db: Session = Depends(get_db)):
 
-    post = db.query(models.Post).filter(models.Post.id == id).first()
+    post = db.query(models.Post,func.count(models.Votes.post_id).label('votes')).join(models.Votes,models.Votes.post_id
+                 == models.Post.id,isouter=True).group_by(models.Post.id).filter(models.Post.id == id).first()
 
     if post is None:
         raise HTTPException(status_code=404, detail="Post not found")

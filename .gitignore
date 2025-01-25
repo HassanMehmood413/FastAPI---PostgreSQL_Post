@@ -1,2 +1,18 @@
-__pycache__
-.env
+# Ignore Python cache files
+__pycache__/
+
+# Ignore virtual environment directory (Poetry)
+.env/
+
+# Ignore Alembic migration versions and database files
+alembic/versions/
+*.sqlite
+
+# Ignore Poetry virtual environment directory (if not using the default)
+.venv/
+
+# Ignore .mypy_cache and other common Python cache files
+.mypy_cache/
+
+# Ignore the Blogs.db file
+blogs.db

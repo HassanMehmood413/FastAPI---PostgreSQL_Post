@@ -40,6 +40,15 @@ class PostCreate(PostBase):
     class Config:
         orm_mode = True 
 
+        
+
+class PostOut(BaseModel):
+    Post: Post
+    votes:int
+    class Config:
+        orm_mode = True 
+
+
 # User schema
 class User(BaseModel):
     username: str
